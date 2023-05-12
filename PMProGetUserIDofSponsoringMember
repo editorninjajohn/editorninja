@@ -1,3 +1,5 @@
+// add sponsor user id to ACF on sponsored user's user on account creation, and then populate that ID into field 54 of form 9 when the sponsored account adds a document to the queue.
+
 function update_sponsor_account_id() {
     $current_user_id = get_current_user_id();
     $discount_code = pmprosm_getCodeByUserID( $current_user_id );
