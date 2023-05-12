@@ -1,12 +1,13 @@
-function update_parent_account_email() {
+add_action( 'pmpro_after_checkout', 'update_sponsor_account_id' );
+
+function update_sponsor_account_id() {
     $current_user_id = get_current_user_id();
     $discount_code = pmprosm_getCodeByUserID( $current_user_id );
     if (!$discount_code) {
         return; // Exit the function if user did not use a discount code
     }
-    $sponsoring_user_id = pmprosm_getCodeUserID( $discount_code );
-    $sponsoring_user_email = get_user_email( $sponsoring_user_id );
-    store_user_email_in_acf( $current_user_id, $sponsoring_user_email );
+    $sponsor_user_id = pmprosm_getCodeUserID( $discount_code );
+    store_sponsor_account_id_in_acf( $current_user_id, $sponsor_user_id );
 }
 
 function get_current_user_id() {
@@ -38,20 +39,15 @@ function pmprosm_getCodeUserID( $code_id ) {
     }
 }
 
-function get_user_email( $user_id ) {
-    $user_email = get_userdata( $user_id )->user_email;
-    return $user_email;
-}
-
 function store_sponsor_account_id_in_acf( $user_id, $user_email ) {
     update_field( 'sponsor_account_id', $user_email, 'user_' . $user_id );
 }
 
-function populate_sponsor_account_email_field( $entry, $form ) {
-    // get the user's email from the parent_account_email field
+function populate_sponsor_account_id_field( $entry, $form ) {
+    // get the user's id from the sponsor_account_id field
     $sponsor_account_id = get_field( 'sponsor_account_id', 'user_' . $entry['created_by'] );
 
-    // populate the sponsor_account_id field in the form with the user's email
+    // populate the sponsor_account_id field in the form with the sponsoring user's user id
     foreach( $form['fields'] as &$field ) {
         if( $field->id == 54 ) {
             $field->defaultValue = $sponsor_account_id;
@@ -61,4 +57,4 @@ function populate_sponsor_account_email_field( $entry, $form ) {
 
     return $form;
 }
-add_filter( 'gform_pre_render_9', 'populate_parent_account_email_field', 10, 2 );
+add_filter( 'gform_pre_render_9', 'populate_sponsor_account_id_field', 10, 2 );
