@@ -1,5 +1,3 @@
-add_action( 'pmpro_after_checkout', 'update_sponsor_account_id' );
-
 function update_sponsor_account_id() {
     $current_user_id = get_current_user_id();
     $discount_code = pmprosm_getCodeByUserID( $current_user_id );
@@ -37,6 +35,8 @@ function pmprosm_getCodeUserID( $code_id ) {
         return false;
     }
 }
+
+add_action( 'pmpro_after_checkout', 'update_sponsor_account_id' );
 
 function populate_sponsor_account_id_field( $entry, $form ) {
     // get the user's id from the sponsor_account_id field
