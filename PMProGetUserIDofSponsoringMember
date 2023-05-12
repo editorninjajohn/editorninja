@@ -1,20 +1,22 @@
 // add sponsor user id to ACF on sponsored user's user on account creation, and then populate that ID into field 54 of form 9 when the sponsored account adds a document to the queue.
 
+add_action( 'pmpro_after_checkout', 'update_sponsor_account_id' );
+
 function update_sponsor_account_id() {
-    $current_user_id = get_current_user_id();
-    $discount_code = pmprosm_getCodeByUserID( $current_user_id );
+//    $current_user_id = get_current_user_id();
+    $discount_code = pmprosm_getDiscountCodeByUserID( $current_user_id );
     if (!$discount_code) {
         return; // Exit the function if user did not use a discount code
     }
-    $sponsor_user_id = pmprosm_getCodeUserID( $discount_code );
+    $sponsor_user_id = pmprosm_getSponsorUserID( $discount_code );
 }
 
-function get_current_user_id() {
-    $user_id = get_current_user_id();
-    return $user_id;
-}
+//function get_current_user_id() {
+//    $user_id = get_current_user_id();
+//    return $user_id;
+// }
 
-function pmprosm_getCodeByUserID( $user_id ) {
+function pmprosm_getDiscountCodeByUserID( $user_id ) {
     $code_user_ids = get_option( 'pmpro_code_user_ids' );
 
     if( is_array($code_user_ids) ) {
@@ -28,7 +30,7 @@ function pmprosm_getCodeByUserID( $user_id ) {
     return false;
 }
 
-function pmprosm_getCodeUserID( $code_id ) {
+function pmprosm_getSponsorUserID( $code_id ) {
     $code_user_ids = get_option( 'pmpro_code_user_ids' );
 
     if( ! empty( $code_user_ids[$code_id] ) ) {
@@ -38,7 +40,9 @@ function pmprosm_getCodeUserID( $code_id ) {
     }
 }
 
-add_action( 'pmpro_after_checkout', 'update_sponsor_account_id' );
+function store_user_email_in_acf( $user_id, $user_email ) {
+    update_field( 'sponsor_account_id', $user_id, 'user_' . $user_id );
+}
 
 function populate_sponsor_account_id_field( $entry, $form ) {
     // get the user's id from the sponsor_account_id field
