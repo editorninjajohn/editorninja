@@ -9,6 +9,7 @@ function update_sponsor_account_id() {
         return; // Exit the function if user did not use a discount code
     }
     $sponsor_user_id = pmprosm_getSponsorUserID( $discount_code );
+    store_user_email_in_acf( $current_user_id, $sponsoring_user_email );
 }
 
 //function get_current_user_id() {
