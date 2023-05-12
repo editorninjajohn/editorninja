@@ -9,11 +9,6 @@ function update_parent_account_email() {
     store_user_email_in_acf( $current_user_id, $sponsoring_user_email );
 }
 
-function get_current_user_id() {
-    $user_id = get_current_user_id();
-    return $user_id;
-}
-
 function pmprosm_getCodeByUserID( $user_id ) {
     $code_user_ids = get_option( 'pmpro_code_user_ids' );
 
