@@ -3,19 +3,14 @@
 add_action( 'pmpro_after_checkout', 'update_sponsor_account_id' );
 
 function update_sponsor_account_id() {
-//    $current_user_id = get_current_user_id();
+    $current_user_id = get_current_user_id();
     $discount_code = pmprosm_getDiscountCodeByUserID( $current_user_id );
     if (!$discount_code) {
         return; // Exit the function if user did not use a discount code
     }
     $sponsor_user_id = pmprosm_getSponsorUserID( $discount_code );
-    store_user_email_in_acf( $current_user_id, $sponsoring_user_email );
+    store_user_email_in_acf( $current_user_id, $sponsor_user_id );
 }
-
-//function get_current_user_id() {
-//    $user_id = get_current_user_id();
-//    return $user_id;
-// }
 
 function pmprosm_getDiscountCodeByUserID( $user_id ) {
     $code_user_ids = get_option( 'pmpro_code_user_ids' );
@@ -41,8 +36,8 @@ function pmprosm_getSponsorUserID( $code_id ) {
     }
 }
 
-function store_user_email_in_acf( $user_id, $user_email ) {
-    update_field( 'sponsor_account_id', $user_id, 'user_' . $user_id );
+function store_user_email_in_acf( $current_user, $sponsor ) {
+    update_field( 'sponsor_account_id', $sponsor, 'user_' . $current_user );
 }
 
 function populate_sponsor_account_id_field( $entry, $form ) {
