@@ -43,18 +43,18 @@ function get_user_email( $user_id ) {
     return $user_email;
 }
 
-function store_user_email_in_acf( $user_id, $user_email ) {
-    update_field( 'parent_account_email', $user_email, 'user_' . $user_id );
+function store_sponsor_account_id_in_acf( $user_id, $user_email ) {
+    update_field( 'sponsor_account_id', $user_email, 'user_' . $user_id );
 }
 
-function populate_parent_account_email_field( $entry, $form ) {
+function populate_sponsor_account_email_field( $entry, $form ) {
     // get the user's email from the parent_account_email field
-    $parent_account_email = get_field( 'parent_account_email', 'user_' . $entry['created_by'] );
+    $sponsor_account_id = get_field( 'sponsor_account_id', 'user_' . $entry['created_by'] );
 
-    // populate the parent_account_email field in the form with the user's email
+    // populate the sponsor_account_id field in the form with the user's email
     foreach( $form['fields'] as &$field ) {
-        if( $field->id == 53 ) {
-            $field->defaultValue = $parent_account_email;
+        if( $field->id == 54 ) {
+            $field->defaultValue = $sponsor_account_id;
             break;
         }
     }
