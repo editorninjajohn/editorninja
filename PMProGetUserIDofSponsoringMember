@@ -1,0 +1,64 @@
+function update_parent_account_email() {
+    $current_user_id = get_current_user_id();
+    $discount_code = pmprosm_getCodeByUserID( $current_user_id );
+    if (!$discount_code) {
+        return; // Exit the function if user did not use a discount code
+    }
+    $sponsoring_user_id = pmprosm_getCodeUserID( $discount_code );
+    $sponsoring_user_email = get_user_email( $sponsoring_user_id );
+    store_user_email_in_acf( $current_user_id, $sponsoring_user_email );
+}
+
+function get_current_user_id() {
+    $user_id = get_current_user_id();
+    return $user_id;
+}
+
+function pmprosm_getCodeByUserID( $user_id ) {
+    $code_user_ids = get_option( 'pmpro_code_user_ids' );
+
+    if( is_array($code_user_ids) ) {
+        foreach( $code_user_ids as $code_id => $code_user_id ) {
+            if( $code_user_id == $user_id ) {
+                return $code_id;
+            }
+        }
+    }
+
+    return false;
+}
+
+function pmprosm_getCodeUserID( $code_id ) {
+    $code_user_ids = get_option( 'pmpro_code_user_ids' );
+
+    if( ! empty( $code_user_ids[$code_id] ) ) {
+        return $code_user_ids[$code_id];
+    } else {
+        return false;
+    }
+}
+
+function get_user_email( $user_id ) {
+    $user_email = get_userdata( $user_id )->user_email;
+    return $user_email;
+}
+
+function store_user_email_in_acf( $user_id, $user_email ) {
+    update_field( 'parent_account_email', $user_email, 'user_' . $user_id );
+}
+
+function populate_parent_account_email_field( $entry, $form ) {
+    // get the user's email from the parent_account_email field
+    $parent_account_email = get_field( 'parent_account_email', 'user_' . $entry['created_by'] );
+
+    // populate the parent_account_email field in the form with the user's email
+    foreach( $form['fields'] as &$field ) {
+        if( $field->id == 53 ) {
+            $field->defaultValue = $parent_account_email;
+            break;
+        }
+    }
+
+    return $form;
+}
+add_filter( 'gform_pre_render_9', 'populate_parent_account_email_field', 10, 2 );
