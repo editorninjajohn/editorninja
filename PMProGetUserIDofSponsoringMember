@@ -7,7 +7,6 @@ function update_sponsor_account_id() {
         return; // Exit the function if user did not use a discount code
     }
     $sponsor_user_id = pmprosm_getCodeUserID( $discount_code );
-    store_sponsor_account_id_in_acf( $current_user_id, $sponsor_user_id );
 }
 
 function get_current_user_id() {
@@ -37,10 +36,6 @@ function pmprosm_getCodeUserID( $code_id ) {
     } else {
         return false;
     }
-}
-
-function store_sponsor_account_id_in_acf( $user_id, $user_email ) {
-    update_field( 'sponsor_account_id', $user_email, 'user_' . $user_id );
 }
 
 function populate_sponsor_account_id_field( $entry, $form ) {
